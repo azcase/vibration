@@ -30,14 +30,14 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
     @Override
     protected void onResume(){
         super.onResume();
-        clearHome();
+        View decor = this.getWindow().getDecorView();
+        decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
 
     boolean FLAG=true;
 
     Handler long_press_handler = new Handler();
-
     Runnable long_press_runnable = new Runnable() {
         @Override
         public void run() {
@@ -76,8 +76,8 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 break;
 
             case MotionEvent.ACTION_UP:
-                FLAG=true;
                 long_press_handler.removeCallbacks(long_press_runnable);
+                FLAG=true;
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -94,12 +94,8 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 break;
         }
         TextView text = (TextView)findViewById(R.id.textView);
-        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+") answer"+pin);
+        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+") answer="+pin);
         return true;
     }
 
-    private void clearHome(){
-        View decor = this.getWindow().getDecorView();
-        decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
 }
