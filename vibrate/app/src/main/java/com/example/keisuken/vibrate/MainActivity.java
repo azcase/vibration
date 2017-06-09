@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnTouchListener{
@@ -59,6 +60,8 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
         int viewY = view_coordinate[1];
         int view_height = (view.getHeight()-40)/10;
         int i;
+        String pin ="1";
+        int answer = Integer.parseInt(pin);
 
         switch (event.getAction()){
 
@@ -66,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 for(i=0;i<10;i++) {
                     int rect_black_Top = (viewY+40)+i*view_height;
                     int rect_black_Bottom = viewY+(i+1)*view_height;
-                    if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom){
+                    if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&answer==i){
                         long_press_handler.postDelayed(long_press_runnable, 0);
                     }
                 }
@@ -81,7 +84,7 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 for(i=0;i<10;i++) {
                     int rect_black_Top = (viewY+40)+i*view_height;
                     int rect_black_Bottom = viewY+(i+1)*view_height;
-                    if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG){
+                    if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG&&answer==i){
                         long_press_handler.postDelayed(long_press_runnable, 0);
                     }else if((touchX<view_left||touchX>view_right)||(touchY<rect_black_Top+view_height&&touchY>rect_black_Bottom)||touchY<(viewY+40)||touchY>viewY+10*view_height){
                         long_press_handler.removeCallbacks(long_press_runnable);
@@ -91,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 break;
         }
         TextView text = (TextView)findViewById(R.id.textView);
-        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+")");
+        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+") answer"+pin);
         return true;
     }
 
