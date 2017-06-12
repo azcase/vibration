@@ -101,47 +101,36 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
                 c.drawRect(rect, p);
                 for(j=0;j<10;j++) {
                     if (i != 0) {
-                        if (j % 2 == 1) {
-                            p.setColor(Color.WHITE);
-                        } else {
-                            p.setColor(Color.BLACK);
-                        }
+                        setWB(j+1);
                         rect = new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height);
                         c.drawRect(rect,p);
                     }
                 }
+                p.setColor(Color.WHITE);
             }else{
                 for(j=0;j<10;j++) {
                     if (i != 0) {
-                        if (j % 2 == 1) {
-                            p.setColor(Color.WHITE);
-                        } else {
-                            p.setColor(Color.BLACK);
-                        }
-                        rect = new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height);
-                        c.drawRect(rect,p);
+                        setWB(j+1);
+                        c.drawRect(new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height), p);
                     }
+                    setWB(j);
+                    c.drawRect(new Rect(j*width/10, start_area+i*height, (j+1)*width/10,  ((i+1)*height+(start_area-black_area))), p);
 
-                    if (j % 2 == 0) {
-                        p.setColor(Color.WHITE);
-                    } else {
-                        p.setColor(Color.BLACK);
-                    }
-                    rect = new Rect(j*width/10, start_area+i*height, (j+1)*width/10,  ((i+1)*height+(start_area-black_area)));
-                    c.drawRect(rect, p);
                 }
+                p.setColor(Color.BLACK);
             }
-            if(i<10){
-                if(TouchX>0&&TouchX<width&&TouchY>start_area+i*height&&TouchY<(i+1)*height+(start_area-black_area)&&FLAG) {
-                    p.setColor(Color.WHITE);
-                }else {
-                    p.setColor(Color.BLACK);
-                }
-                p.setTextSize(64);
-                c.drawText("" + i, width / 2, start_area + i * height + (height / 2), p);
-            }
+            p.setTextSize(64);
+            c.drawText("" + i, width / 2, start_area + i * height + (height / 2), p);
         }
         holder.unlockCanvasAndPost(c);
+    }
+
+    private void setWB(int number){
+        if (number % 2 == 0) {
+            p.setColor(Color.WHITE);
+        } else {
+            p.setColor(Color.BLACK);
+        }
     }
 
 }
