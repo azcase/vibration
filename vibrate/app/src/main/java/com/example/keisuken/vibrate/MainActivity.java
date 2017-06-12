@@ -19,6 +19,8 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity implements View.OnTouchListener{
 
+    Random random = new Random();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +38,8 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
 
 
     boolean FLAG=true;
+    boolean Touch_Flag=true;
+    int answer=100;
 
     Handler long_press_handler = new Handler();
     Runnable long_press_runnable = new Runnable() {
@@ -51,6 +55,10 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
     public boolean onTouch(View v,MotionEvent event){
         int touchX = (int)event.getRawX();
         int touchY = (int)event.getRawY();
+
+        int start_area=90;
+        int black_area=40;
+
         View view = findViewById(R.id.view);
         view.onTouchEvent(event);
         int view_coordinate[] = new int[2];
@@ -58,17 +66,21 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
         int view_left = view_coordinate[0];
         int view_right = view.getRight();
         int viewY = view_coordinate[1];
-        int view_height = (view.getHeight()-40)/10;
+        int view_height = (view.getHeight()-(start_area-black_area))/11;
         int i;
-        String pin ="1";
-        int answer = Integer.parseInt(pin);
+        int con;
+        if(touchY<(viewY+start_area)&&Touch_Flag==true){
+            while ((con=random.nextInt(10))==answer);
+            answer= con;
+            Touch_Flag=false;
+        }
 
         switch (event.getAction()){
 
             case MotionEvent.ACTION_DOWN:
-                for(i=0;i<10;i++) {
-                    int rect_black_Top = (viewY+40)+i*view_height;
-                    int rect_black_Bottom = viewY+(i+1)*view_height;
+                for(i=0;i<11;i++) {
+                    int rect_black_Top = (viewY+start_area)+i*view_height;
+                    int rect_black_Bottom = viewY+(i+1)*view_height+(start_area-black_area);
                     if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&answer==i){
                         long_press_handler.postDelayed(long_press_runnable, 0);
                     }
@@ -78,12 +90,15 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
             case MotionEvent.ACTION_UP:
                 long_press_handler.removeCallbacks(long_press_runnable);
                 FLAG=true;
+                if(touchX>view_left&&touchX<view_right&&touchY>viewY+10*view_height+(start_area-black_area)){
+                    Touch_Flag=true;
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                for(i=0;i<10;i++) {
-                    int rect_black_Top = (viewY+40)+i*view_height;
-                    int rect_black_Bottom = viewY+(i+1)*view_height;
+                for(i=0;i<11;i++) {
+                    int rect_black_Top = (viewY+start_area)+i*view_height;
+                    int rect_black_Bottom = viewY+(i+1)*view_height+(start_area-black_area);
                     if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG&&answer==i){
                         long_press_handler.postDelayed(long_press_runnable, 0);
                     }else if((touchX<view_left||touchX>view_right)||(touchY<rect_black_Top+view_height&&touchY>rect_black_Bottom)||touchY<(viewY+40)||touchY>viewY+10*view_height){
@@ -94,7 +109,7 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
                 break;
         }
         TextView text = (TextView)findViewById(R.id.textView);
-        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+") answer="+pin);
+        text.setText("view("+view_left+","+viewY+"),touch("+touchX+","+touchY+") answer="+ answer);
         return true;
     }
 

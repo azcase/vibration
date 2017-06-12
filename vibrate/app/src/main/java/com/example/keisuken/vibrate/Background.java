@@ -82,27 +82,64 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
 
     @SuppressLint("DrawAllocation")
     protected void onDraw(SurfaceHolder holder){
+        int divide = 11;
+        int start_area=90;
+        int black_area=40;
         Canvas c = holder.lockCanvas();
         c.drawColor(Color.BLACK);
-        int height=(c.getHeight()-40)/10;
+        int height=(c.getHeight()-(start_area-black_area))/divide;
         int width=c.getWidth();
-        int i;
+        int i,j;
+        p.setColor(Color.WHITE);
+        p.setTextSize(64);
+        c.drawText("START", width / 2 - 80, start_area/2+20, p);
         Rect rect;
-        for(i=0;i<10;i++){
-            if(TouchX>0&&TouchX<width&&TouchY>40+i*height&&TouchY<(i+1)*height&&FLAG) {
+        for(i=0;i<divide;i++){
+            if(TouchX>0&&TouchX<width&&TouchY>start_area+i*height&&TouchY<(i+1)*height+(start_area-black_area)&&FLAG&&i<divide-1) {
                 p.setColor(Color.BLUE);
+                rect = new Rect(0, start_area+i*height, width, ((i+1)*height+(start_area-black_area)));
+                c.drawRect(rect, p);
+                for(j=0;j<10;j++) {
+                    if (i != 0) {
+                        if (j % 2 == 1) {
+                            p.setColor(Color.WHITE);
+                        } else {
+                            p.setColor(Color.BLACK);
+                        }
+                        rect = new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height);
+                        c.drawRect(rect,p);
+                    }
+                }
             }else{
-                p.setColor(Color.WHITE);
+                for(j=0;j<10;j++) {
+                    if (i != 0) {
+                        if (j % 2 == 1) {
+                            p.setColor(Color.WHITE);
+                        } else {
+                            p.setColor(Color.BLACK);
+                        }
+                        rect = new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height);
+                        c.drawRect(rect,p);
+                    }
+
+                    if (j % 2 == 0) {
+                        p.setColor(Color.WHITE);
+                    } else {
+                        p.setColor(Color.BLACK);
+                    }
+                    rect = new Rect(j*width/10, start_area+i*height, (j+1)*width/10,  ((i+1)*height+(start_area-black_area)));
+                    c.drawRect(rect, p);
+                }
             }
-            rect = new Rect(0, 40+i*height, width, ((i+1)*height));
-            c.drawRect(rect, p);
-            if(TouchX>0&&TouchX<width&&TouchY>40+i*height&&TouchY<(i+1)*height&&FLAG) {
-                p.setColor(Color.WHITE);
-            }else{
-                p.setColor(Color.BLACK);
+            if(i<10){
+                if(TouchX>0&&TouchX<width&&TouchY>start_area+i*height&&TouchY<(i+1)*height+(start_area-black_area)&&FLAG) {
+                    p.setColor(Color.WHITE);
+                }else {
+                    p.setColor(Color.BLACK);
+                }
+                p.setTextSize(64);
+                c.drawText("" + i, width / 2, start_area + i * height + (height / 2), p);
             }
-            p.setTextSize(64);
-            c.drawText(""+i, width/2, 40+i*height+(height/2),p);
         }
         holder.unlockCanvasAndPost(c);
     }
