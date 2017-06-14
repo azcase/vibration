@@ -70,7 +70,6 @@ public class MainActivity extends ActionBarActivity implements View.OnTouchListe
         int i;
         int con;
         if(touchY<(viewY+start_area)&&Touch_Flag==true){
-            while ((con=random.nextInt(10))==answer);
             answer= con;
             Touch_Flag=false;
         }
