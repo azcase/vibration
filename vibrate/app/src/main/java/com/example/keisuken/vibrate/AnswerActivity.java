@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class AnswerActivity extends ActionBarActivity {
@@ -13,6 +14,12 @@ public class AnswerActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
+        TextView textView = (TextView) findViewById(R.id.textView2);
+        if(getIntent().getBooleanExtra("answer", false)){
+            textView.setText("Correct");
+        }else{
+            textView.setText("Incorrect");
+        }
     }
 
     @Override
