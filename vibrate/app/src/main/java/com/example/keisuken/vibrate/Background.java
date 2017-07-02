@@ -17,7 +17,9 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -29,7 +31,6 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
     private Paint p=new Paint();;
     int TouchX;
     int TouchY;
-    int key;
     boolean FLAG=true;
     boolean change_flag=true;
     Context context;
@@ -106,6 +107,7 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
         p.setTextSize(64);
         c.drawText("START", width / 2 - 80, start_area/2+20, p);
         Rect rect;
+        //input = Shuffle();
 
         if(this.change_flag&&TouchX>0&&TouchX<width&&TouchY>0&&TouchY<start_area){
             input = Shuffle();
@@ -120,7 +122,7 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
                 c.drawRect(rect, p);
                 for(j=0;j<10;j++) {
                     p.setColor(Color.BLUE);
-                    c.drawText(""+ input[i][j], j*width/10+10, start_area+i*height+60,p);
+                    c.drawText(""+ (input[i][j]-1), j*width/10+10, start_area+i*height+60,p);
                     if (i != 0) {
                         setWB(j+1);
                         rect = new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height);
@@ -135,9 +137,10 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
                         c.drawRect(new Rect(j*width/10, start_area+i*height-40, (j+1)*width/10, start_area+i*height), p);
                     }
                     setWB(j);
-                    c.drawRect(new Rect(j*width/10, start_area+i*height, (j+1)*width/10,  ((i+1)*height+(start_area-black_area))), p);
-                    setWB(j+1);
-                    if(i<divide-1)c.drawText(""+ input[i][j], j*width/10+30, start_area+i*height+60,p);
+                    c.drawRect(new Rect(j * width / 10, start_area + i * height, (j + 1) * width / 10, ((i + 1) * height + (start_area - black_area))), p);
+                    setWB(j + 1);
+                    //p.setTextSize(32);
+                    if(i<divide-1)c.drawText(""+ (input[i][j]-1), j*width/10+30, start_area+i*height+60,p);
                 }
                 p.setColor(Color.BLACK);
             }
@@ -157,16 +160,28 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private int[][] Shuffle(){
-        get_Input(this.context);
+        int r[][]=new int[15][15];
+        int key = get_key(this.context);
+        r[0]=get_Input(this.context);
         ArrayList<Integer> input = new ArrayList<>();
+        ArrayList[] row = new ArrayList[10];
         int h,i,j;
         boolean flag;
-        int r[][]=new int[15][15];
-        r[0]=this.input[0];
-        for(i=0;i<10;i++)input.add(i);
-        for (h=1;h<9;h++){
+        for(i=1;i<=10;i++){
+            input.add(i);
+            row[i-1]=new ArrayList();
+            for(j=1;j<=10;j++)row[i-1].add(j);
+        }
+        for(i=0;i<10;i++)row[i].remove(row[i].indexOf(r[0][i]));
+        for (h=1;h<8;h++){
             flag=true;
             Collections.shuffle(input);
+            for (i=0;i<h&&flag;i++){
+                if(row[i].indexOf(input.get(i))==-1){
+                    flag=false;
+                    h--;
+                }
+            }
             for (i=0;i<h&&flag;i++){
                 for (j=0;j<10&&flag;j++){
                     if(r[i][j]==input.get(j)){
@@ -177,30 +192,152 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
             }
             for(i=0;i<10&&flag;i++){
                 r[h][i]=input.get(i);
+                row[i].remove(row[i].indexOf(input.get(i)));
             }
         }
-        //一番下の数列を選択
+        //8列目を選択
+        /*//入れられる数を複製
+        ArrayList[] remain_row = new ArrayList[10];
         for(h=0;h<10;h++){
-            j=0;
-            for(i=0;i<9;i++){
-               j+=r[i][h];
-            }
-            r[9][h]=(45-j);
+            remain_row[h]=new ArrayList();
+            for(i=0;i<row[h].size();i++)remain_row[h].add(row[h].get(i));
         }
-        r[0] = r[this.key];
-        r[this.key]=this.input[0];
+        //最初に、入れられる数字が二個重複している列から選択
+        int input_a,input_b;
+        for(h=0;h<10;h++){
+            if(remain_row[h].size()<2)continue;
+            for(i=h+1;i<10;i++){
+                if(remain_row[i].size()<2)continue;
+                input_a=0;
+                input_b=0;
+                for(j=0;j<remain_row[i].size();j++){
+                    if(remain_row[h].indexOf(remain_row[i].get(j))!=-1){
+                        if(input_a==0)input_a=(int)remain_row[h].get(remain_row[h].indexOf(remain_row[i].get(j)));
+                        else if(input_b==0){
+                            input_b=(int)remain_row[h].get(remain_row[h].indexOf(remain_row[i].get(j)));
+                            break;
+                        }
+                    }
+                }
+                if(input_a!=0&&input_b!=0){
+                    r[7][h]=input_a;
+                    r[7][i]=input_b;
+                    remain_row[h].clear();
+                    remain_row[i].clear();
+                    for(j=0;j<10;j++){
+                        if(remain_row[j].indexOf(r[7][h])!=-1)remain_row[j].remove(remain_row[j].indexOf(r[7][h]));
+                        if(remain_row[j].indexOf(r[7][i])!=-1)remain_row[j].remove(remain_row[j].indexOf(r[7][i]));
+                    }
+                    break;
+                }
+            }
+            for(i=0;i<10;i++){
+                if(remain_row[i].size()==1){
+                    r[7][i]=(int) remain_row[i].get(0);
+                    remain_row[i].clear();
+                    for(j=0;j<10;j++){
+                        if(remain_row[j].indexOf(r[7][i])!=-1)remain_row[j].remove(remain_row[j].indexOf(r[7][i]));
+                        if(remain_row[j].size()==1)i=j;
+                    }
+                }
+            }
+        }
+
+
+        //最後に、選択されなかった数字を選択する
+
+
+        //for(h=0;h<10;h++) row[h].remove(row[h].indexOf(r[7][h]));
+
+        */
+        // 9列目の選択
+        i=0;
+        r[8][i]= (int) row[i].get(0);
+        row[i].clear();
+        for(j=0;j<10;j++){
+            for(h=1;h<10;h++){
+                if(h!=i&&row[h].indexOf(r[8][i])!=-1){
+                    row[h].remove(row[h].indexOf(r[8][i]));
+                    r[8][h]=(int) row[h].get(0);
+                    row[h].clear();
+                    i=h;
+                    break;
+                }
+            }
+            if(h==10){
+                i=0;
+                while(i<10&&row[i].size()<2)i++;
+                if (i==10)break;
+                r[8][i]= (int) row[i].get(0);
+                row[i].clear();
+            }
+        }
+
+        //10列目を選択
+        for(h=0,j=0;h<10;h++,j=0){
+            for(i=0;i<9;i++){
+                j+=r[i][h];
+            }
+            r[9][h]=(55-j);
+        }
+        //振動する配列をkeyの位置に入れる
+        r[10] = r[key];
+        r[key]=r[0];
+        r[0]=r[10];
 
         return r;
 
     }
 
-    private void get_Input(Context context){
+    private int[] get_Input(Context context){
         SharedPreferences preferences = context.getSharedPreferences("Ten_Ten",Context.MODE_PRIVATE | context.MODE_MULTI_PROCESS);
         int i;
-        this.key = preferences.getInt("key", 0);
+        int input[]=new int[10];
         for(i=0;i<10;i++){
-            this.input[0][i]=preferences.getInt("input"+i,i);
+            input[i]=preferences.getInt("input"+i,i);
         }
+        return input;
+    }
+
+    /*int r[]=new int[10];
+    private int[] setArray(ArrayList[] row){
+        ArrayList[] a = new ArrayList[10];
+        int r[] = new int[10];
+        int h,i,j;
+        for(h=0;h<10;h++){
+            a[h]=new ArrayList();
+            for(i=0;i<row[h].size();i++)a[h].add((int)row[h].get(i));
+        }
+        MakeArray(a, 0, r);
+
+        return this.r;
+    }
+
+    private boolean MakeArray(ArrayList[] A, int num, int[] r){
+        int h,i,j;
+        boolean flag=true;
+        boolean match_flag=true;
+        for(h=0;num<10&&h<A[num].size()&&flag;h++){
+            r[num] = (int)A[num].get(h);
+            for(i=0;i<num&&flag;i++){
+                if(r[num]==r[i]) match_flag=false;
+            }
+            if(num==0||match_flag)flag=MakeArray(A,num+1,r);
+
+        }
+        if(num==9&&flag){
+            this.r=r;
+            return false;
+        }
+        if(!flag)return false;
+        return true;
+    }*/
+
+    private int get_key(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("Ten_Ten",Context.MODE_PRIVATE | context.MODE_MULTI_PROCESS);
+        int key = preferences.getInt("key", 0);
+
+        return key;
     }
 }
 

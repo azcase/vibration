@@ -1,4 +1,4 @@
-package com.example.keisuken.vibrate;
+package com.example.keisuken.vibrate_detect;
 
 import android.app.Activity;
 import android.os.Bundle;

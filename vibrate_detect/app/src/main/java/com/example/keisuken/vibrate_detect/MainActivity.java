@@ -1,4 +1,4 @@
-package com.example.keisuken.vibrate;
+package com.example.keisuken.vibrate_detect;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,21 +27,15 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     Random random = new Random();
-    String Answer_PIN = "1234";
+    String Answer_PIN = "";
     String Enter_PIN="";
     boolean FLAG=true;
-    boolean Touch_Flag=true;
-    boolean Entry_Flag=true;
-    boolean Start_Flag=false;
-    boolean flag=true;
-    int answer=100;
-    int enter=-1;
-    int input[]= new int[10];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Answer_PIN=""+getIntent().getIntExtra("answer_number", 0);
     }
 
     @Override
@@ -65,7 +59,7 @@ public class MainActivity extends Activity {
 
 
     public boolean dispatchTouchEvent(MotionEvent event){
-        if(Enter_PIN.length()<4){
+        if(Enter_PIN.length()<1){
             int touchX = (int)event.getRawX();
             int touchY = (int)event.getRawY();
 
@@ -81,21 +75,13 @@ public class MainActivity extends Activity {
             int view_height = (view.getHeight()-(start_area-black_area))/11;
             int i,j;
 
-            if(touchY<(viewY+start_area)&&Touch_Flag){
-                answer= random.nextInt(10);
-                input = Shuffle();
-                Touch_Flag=false;
-                Start_Flag=true;
-                if(enter>=0)Enter_PIN+=enter;
-            }
-
             if(Enter_PIN.length()==Answer_PIN.length()){
                 Intent intent = new Intent(getApplicationContext(), AnswerActivity.class);
                 intent.putExtra("answer", Enter_PIN.equals(Answer_PIN));
                 startActivity(intent);
             }
 
-            if(Enter_PIN.length()<4)view.onTouchEvent(event);
+            if(Enter_PIN.length()<1)view.onTouchEvent(event);
 
             switch (event.getAction()){
 
@@ -103,7 +89,7 @@ public class MainActivity extends Activity {
                     for(i=0;i<11;i++) {
                         int rect_black_Top = (viewY+start_area)+i*view_height;
                         int rect_black_Bottom = viewY+(i+1)*view_height+(start_area-black_area);
-                        if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&answer==i){
+                        if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom){
                             long_press_handler.postDelayed(long_press_runnable, 0);
                         }
                     }
@@ -118,22 +104,11 @@ public class MainActivity extends Activity {
                     for(i=0;i<11;i++) {
                         int rect_black_Top = (viewY+start_area)+i*view_height;
                         int rect_black_Bottom = viewY+(i+1)*view_height+(start_area-black_area);
-                        if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG&&answer==i){
+                        if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG&&touchY<viewY+10*view_height){
                             long_press_handler.postDelayed(long_press_runnable, 0);
                         }else if((touchX<view_left||touchX>view_right)||(touchY<rect_black_Top+view_height&&touchY>rect_black_Bottom)||touchY<(viewY+40)||touchY>viewY+10*view_height){
                             long_press_handler.removeCallbacks(long_press_runnable);
                             FLAG=true;
-                        }
-                        if(touchX>view_left&&touchX<view_right&&touchY>viewY+10*view_height+(start_area-black_area)&&!Entry_Flag){
-                            Touch_Flag=true;
-                            Entry_Flag=true;
-                        }else if(touchX>view_left&&touchX<view_right&&touchY<viewY+10*view_height+(start_area-black_area)&&Entry_Flag&&Start_Flag){
-                            Entry_Flag=false;
-                            for(j=0;j<10;j++){
-                                if(touchX>view_left+j*(view_right-view_left)/10&&touchX<view_left+(j+1)*(view_right-view_left)/10){
-                                    enter=input[j];
-                                }
-                            }
                         }
                     }
                     break;
@@ -145,23 +120,6 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    private int[] Shuffle(){
-        SharedPreferences preferences = getSharedPreferences("Ten_Ten", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        ArrayList<Integer> input = new ArrayList<>();
-        int i;
-        int r[] = new int[10];
-        for(i=0;i<10;i++)input.add(i);
-        Collections.shuffle(input);
-        for(i=0;i<10;i++){
-            r[i]=input.get(i);
-            editor.putInt("input"+i, input.get(i)+1);
-            editor.commit();
-        }
-        editor.putInt("key",this.answer);
-        editor.commit();
-        return r;
 
-    }
 
 }
