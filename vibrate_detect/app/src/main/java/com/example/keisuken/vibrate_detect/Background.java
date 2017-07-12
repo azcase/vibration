@@ -34,6 +34,7 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
     boolean FLAG=true;
     boolean change_flag=true;
     Context context;
+    //int teachY=40;
 
     private void init(Context context){
         this.context=context;
@@ -98,8 +99,13 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
         int divide = 11;
         int start_area=90;
         int black_area=40;
+        int teach_width=80;
         Canvas c = holder.lockCanvas();
         c.drawColor(Color.BLACK);
+
+        /*p.setColor(Color.WHITE);
+        c.drawRect(new Rect(0,0,0+teach_width,c.getHeight()),p);*/
+
         int height=(c.getHeight()-(start_area-black_area))/divide;
         int width=c.getWidth();
         int i,j,k;
@@ -129,6 +135,8 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
         p.setColor(Color.BLACK);
         p.setTextSize(64);
         c.drawText("Goal", width / 2-50, start_area + i * height + (height / 2), p);
+        /*p.setColor(Color.BLACK);
+        c.drawCircle(40,teachY+=10,40,p);*/
         holder.unlockCanvasAndPost(c);
     }
 

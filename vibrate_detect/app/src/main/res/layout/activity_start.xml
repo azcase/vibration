@@ -12,22 +12,9 @@
 
     <RelativeLayout
         android:layout_width="336dp"
-        android:layout_height="463dp"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="24dp">
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="92dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Start"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/button"
-            android:layout_marginStart="14dp"
-            android:layout_alignEnd="@+id/button" />
+        android:layout_height="592dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <Button
             android:id="@+id/button"
@@ -35,7 +22,41 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="105dp"
+            android:layout_marginBottom="79dp"
             android:text="Button" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="120dp"
+            android:text="TextView" />
+
+        <RadioGroup
+            android:id="@+id/RadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">>
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="left handed" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="right handed" />
+
+        </RadioGroup>
+
     </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
                         int rect_black_Bottom = viewY+(i+1)*view_height+(start_area-black_area);
                         if(touchX>view_left&&touchX<view_right&&touchY>rect_black_Top&&touchY<rect_black_Bottom&&FLAG&&answer==i){
                             long_press_handler.postDelayed(long_press_runnable, 0);
-                        }else if((touchX<view_left||touchX>view_right)||(touchY<rect_black_Top+view_height&&touchY>rect_black_Bottom)||touchY<(viewY+40)||touchY>viewY+10*view_height){
+                        }else if((touchX<view_left||touchX>view_right)||(touchY<rect_black_Top+view_height&&touchY>rect_black_Bottom)||touchY<(viewY+90)||touchY>viewY+10*view_height){
                             long_press_handler.removeCallbacks(long_press_runnable);
                             FLAG=true;
                         }
