@@ -36,7 +36,6 @@ public class MainActivity extends Activity  {
     boolean FLAG=true;
     boolean Start_Flag=false;
     boolean Goal_Flag=false;
-    private final int WC= ViewGroup.LayoutParams.WRAP_CONTENT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

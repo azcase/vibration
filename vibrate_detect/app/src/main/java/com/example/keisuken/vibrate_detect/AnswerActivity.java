@@ -2,6 +2,7 @@ package com.example.keisuken.vibrate_detect;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +17,30 @@ public class AnswerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
-        Button button = (Button) findViewById(R.id.button3);
+        Button button;
+        Resources res = getResources();
+        int i;
+        for(i=0;i<11;i++){
+            int id = res.getIdentifier("button"+(5+i), "id", getPackageName());
+            button = (Button)findViewById(id);
+            final String str = button.getText().toString();
+            button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    TextView e = (TextView) findViewById(R.id.textView7);
+                    String string = e.getText()+str;
+                    if(!str.equals("Clear"))e.setText(string);
+                    else e.setText("");
+                }
+            });
+        }
+        button = (Button) findViewById(R.id.button3);
         button.setText("Answer");
 
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                EditText e = (EditText) findViewById(R.id.editText);
+                TextView e = (TextView) findViewById(R.id.textView7);
                 String answer = getIntent().getStringExtra("answer");
                 Intent intent = new Intent(getApplicationContext(), MailActivity.class);
                 intent.putExtra("trial",getIntent().getIntExtra("trial",0));
@@ -31,6 +49,7 @@ public class AnswerActivity extends Activity {
                 }else{
                     intent.putExtra("result",false);
                 }
+                intent.putExtra("answer",answer);
                 startActivity(intent);
             }
         });

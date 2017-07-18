@@ -20,7 +20,7 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         TextView text =(TextView) findViewById(R.id.textView3);
-        text.setText("Where is the place of vibration?");
+        text.setText("Where is vibration?");
 
         Button button = (Button)findViewById(R.id.button);
         button.setText("Start");

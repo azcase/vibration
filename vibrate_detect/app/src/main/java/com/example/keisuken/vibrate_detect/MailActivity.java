@@ -3,20 +3,29 @@ package com.example.keisuken.vibrate_detect;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.nfc.Tag;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AndroidException;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.jar.Manifest;
 
 public class MailActivity extends AppCompatActivity {
 
@@ -33,37 +42,44 @@ public class MailActivity extends AppCompatActivity {
             text.setText("Failed");
         }
         text = (TextView) findViewById(R.id.textView6);
-        text.setText("Trial:"+getIntent().getIntExtra("trial",0));
+        text.setText("Trial:"+getIntent().getIntExtra("trial",0)+"  answer:"+getIntent().getStringExtra("answer"));
+
+        String filename ="test.csv";
+        File f = new File(Environment.getExternalStorageDirectory().getPath()+"/download/"+filename);
+        f.getParentFile().mkdir();
+        String output_string = "trial, answer\n";
+        String output_number = ""+getIntent().getIntExtra("trial",0)+", "+getIntent().getStringExtra("answer");
+
+        Log.d("debug",Environment.getExternalStorageDirectory().getPath());
+        FileOutputStream OutputStream;
+        try{
+            OutputStream=new FileOutputStream(f,false);
+            OutputStream.write(output_string.getBytes());
+            OutputStream.write(output_number.getBytes());
+            OutputStream.flush();
+            OutputStream.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 TextView textview = (TextView) findViewById(R.id.textView4);
                 String address="n1410092kp@gmail.com";
                 String subject=textview.getText()+" to detection";
-                String text = "Trial:"+getIntent().getIntExtra("trial",0);
+                String text = "Trial:"+getIntent().getIntExtra("trial",0)+"  answer:"+getIntent().getStringExtra("answer");
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_SEND);
-                intent.setType("plain/text");
 
-                String filename ="test.csv";
-                String output = "trial, "+getIntent().getIntExtra("trial",0);
-                FileOutputStream OutputStream;
-                try{
-                    OutputStream=openFileOutput(filename, 0);
-                    OutputStream.write(output.getBytes());
-                    OutputStream.close();
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                File file=new File(filename);
-                Uri uri = Uri.parse("file://data/data/package_name/files/"+file.getAbsolutePath());
+                File file=new File(Environment.getExternalStorageDirectory().getPath()+"/download/test.csv");
 
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[] { address });
                 intent.putExtra(Intent.EXTRA_SUBJECT, subject);
                 intent.putExtra(Intent.EXTRA_TEXT, text);
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setType("plain/text");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
 
-                startActivity(Intent.createChooser(intent,null));
+                startActivity(intent);
             }
         });
 

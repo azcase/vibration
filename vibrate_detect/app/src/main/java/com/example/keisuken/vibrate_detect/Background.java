@@ -32,9 +32,7 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
     int TouchX;
     int TouchY;
     boolean FLAG=true;
-    boolean change_flag=true;
     Context context;
-    //int teachY=40;
 
     private void init(Context context){
         this.context=context;
@@ -76,18 +74,15 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
         TouchY=(int)event.getY()-105;
         FLAG=true;
         switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                onDraw(this.getHolder());
-                break;
-
             case MotionEvent.ACTION_UP:
                 FLAG=false;
                 onDraw(this.getHolder());
                 break;
 
-            case MotionEvent.ACTION_MOVE:
+            default:
                 onDraw(this.getHolder());
                 break;
+
         }
         return true;
     }
@@ -99,7 +94,7 @@ public class Background extends SurfaceView implements SurfaceHolder.Callback {
         int divide = 11;
         int start_area=90;
         int black_area=40;
-        int teach_width=80;
+        //int teach_width=80;
         Canvas c = holder.lockCanvas();
         c.drawColor(Color.BLACK);
 

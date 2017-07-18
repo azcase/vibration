@@ -3,6 +3,9 @@
     package="com.example.keisuken.vibrate_detect">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_PROVIDER"/>
 
     <application
         android:allowBackup="true"

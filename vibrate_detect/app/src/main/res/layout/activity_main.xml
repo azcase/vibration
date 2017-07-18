@@ -27,7 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Trial:0" />
+        android:text="Trial:0"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/button2"
